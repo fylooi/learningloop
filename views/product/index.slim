@@ -8,9 +8,24 @@ html
     header
       .navbar.navbar-dark.bg-dark.shadow-sm
         .container
-          a.navbar-brand.d-flex.align-items-center href="#" 
+          a.navbar-brand.d-flex.align-items-center href="/" 
             strong Shop
     main 
-      section.py-5.text-center.container
-        - @products.each do |product|
-          h3 Product
+      .album.py-5.bg-light
+        .container
+          .row.row-cols-1.row-cols-sm-2.row-cols-md-3.g-3
+            - @products.each do |product|
+              .col
+                .card.shadow-sm
+                  img src=(product.image_url) alt=(product.name)
+                  .card-body
+                    p.card-text 
+                      strong = product.name
+                      br
+                      strong = product.price
+                      br
+                      = product.description
+                    / .d-flex.justify-content-between.align-items-center
+                      .btn-group
+                        button.btn.btn-sm.btn-outline-secondary type="button"  View
+                        button.btn.btn-sm.btn-outline-secondary type="button"  Edit
