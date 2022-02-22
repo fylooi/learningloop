@@ -1,6 +1,6 @@
 class Router
   ROUTES = [
-    [/__root__/,        'GET', 'HomeController#index'],
+    [/__root__/,        'GET', 'ProductController#index'],
     [/products\/(\d+)/, 'GET', 'ProductController#show'],
     [/products/,        'GET', 'ProductController#index'],
   ]
