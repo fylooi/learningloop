@@ -11,7 +11,7 @@ class Application
   def call(env)
     req = Rack::Request.new(env)
 
-    controller, action = Router.resolve(req.path)
+    controller, action = Router.resolve(req.request_method, req.path)
 
     controller.new(env).run(action)
   end
