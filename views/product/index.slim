@@ -22,9 +22,10 @@ html
                     p.card-text 
                       strong = product.name
                       br
-                      strong = product.price
+                      strong #{product.currency} #{product.price}
                       br
                       = product.description
                     .d-flex.justify-content-between.align-items-center
                       .btn-group
-                        a.btn.btn-sm.btn-outline-secondary href=(product.payment_link) type="button" target="_blank" Buy
+                        form action="products/#{product.id}/checkout" method="post"
+                          button.btn.btn-sm.btn-outline-secondary type="submit" Buy
