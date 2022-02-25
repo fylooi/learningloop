@@ -4,6 +4,8 @@ class Router
     ["__root__",               'GET', 'ProductController#index'],
     ["/products/:id/checkout", 'POST', 'ProductController#checkout'],
     ["/products",              'GET', 'ProductController#index'],
+    ["/products/success",      'GET', 'ProductController#success'],
+    ["/products/cancel",       'GET', 'ProductController#cancel']
   ]
 
   NOT_FOUND_CONTROLLER_ACTION = 'HomeController#not_found'
