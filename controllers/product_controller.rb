@@ -8,7 +8,11 @@ class ProductController < BaseController
   def checkout
     @product = products.find { |product| product.id == params["id"].to_i }
 
-    redirect_to '/'
+    session = `curl https://api.stripe.com/v1/checkout/sessions -u sk_test_8sV9eWWPqD7XiIkUBPM5yNZr002eRBacOY: -d success_url="http://#{request.host_with_port}/products/success" -d cancel_url="http://#{request.host_with_port}/products/cancel" -d "line_items[0][price]"=#{@product.stripe_price} -d "line_items[0][quantity]"=1 -d mode=payment`
+    
+    checkout_url = session.match(/"url": "(.+?)"/).captures.first
+
+    redirect_to checkout_url
   end
 
   def products
@@ -19,6 +23,7 @@ class ProductController < BaseController
         price: 100.00,
         currency: '$',
         image_url: "https://placebeard.it/640x360",
+        stripe_price: 'price_1KW1sWGTlDgpAlbNYO43lFcU',
         id: 1
       ),
       OpenStruct.new(
@@ -27,8 +32,15 @@ class ProductController < BaseController
         price: 50.00,
         currency: '$',
         image_url: "https://placebeard.it/640x360",
+        stripe_price: 'price_1KW1tUGTlDgpAlbNwncbxuCH',
         id: 2
       )
     ]
+  end
+
+  def success
+  end
+
+  def cancel
   end
 end
