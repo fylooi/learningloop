@@ -1,23 +1,40 @@
 class Router
+  # TODO: convert routes into actual objects instead of passing triplets around
   ROUTES = [
-    [/__root__/,                  'GET', 'ProductController#index'],
-    [/products\/(\d+)\/checkout/, 'POST', 'ProductController#checkout'],
-    [/products/,                  'GET', 'ProductController#index'],
+    ["__root__",               'GET', 'ProductController#index'],
+    ["/products/:id/checkout", 'POST', 'ProductController#checkout'],
+    ["/products",              'GET', 'ProductController#index'],
   ]
 
-  NOT_FOUND = 'HomeController#not_found'
+  NOT_FOUND_CONTROLLER_ACTION = 'HomeController#not_found'
 
-  # returns a controller and action pair for a given path
   class << self
     def resolve(http_method, path)
       path = '__root__' if path == '/'
+      
+      route = ROUTES.find { |route| match_route?(http_method, path, route) }
+      
+      controller_action = route ? route.last : NOT_FOUND_CONTROLLER_ACTION
+      controller_action = controller_action.split('#')
+      
+      controller, action = Object.const_get(controller_action[0]).new, controller_action[1]
+      controller.route = route
+      
+      [controller, action]
+    end
 
-      match = ROUTES.find { |(route_regexp, route_method, key)| http_method == route_method && path =~ route_regexp }
+    def match_route?(http_method, path, route)
+      path = '__root__' if path == '/'
+
+      route_pattern, route_method, _controller_action = *route
+
+      return false unless http_method == route_method
+
+      pattern_segments, path_segments = route_pattern.split('/'), path.split('/')
       
-      key = match ? match.last : NOT_FOUND
-      key = key.split('#')
+      return false unless path_segments.length == pattern_segments.length
       
-      [Object.const_get(key[0]), key[1]]
+      pattern_segments.map.with_index { |segment, ix| segment.start_with?(':') || segment == path_segments[ix] }.all?
     end
   end
 end

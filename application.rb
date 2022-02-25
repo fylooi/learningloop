@@ -9,11 +9,11 @@ Dir[File.expand_path('../controllers/*.rb', __FILE__)].each(&method(:require))
 
 class Application
   def call(env)
-    req = Rack::Request.new(env)
+    request = Rack::Request.new(env)
 
-    controller, action = Router.resolve(req.request_method, req.path)
-
-    controller.new(env).run(action)
+    controller_instance, action = Router.resolve(request.request_method, request.path)
+    controller_instance.env, controller_instance.request = env, request
+    controller_instance.run(action)
   end
 end
 
